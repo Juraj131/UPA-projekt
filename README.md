@@ -2,7 +2,7 @@
 
 **Názov týmu:** UPA-Team-2025  
 **Riešitelia:** 
-- Juraj Bendik (vedúci týmu)
+- Juraj Bendik, Adam Brezina
 
 ## E-shop
 
