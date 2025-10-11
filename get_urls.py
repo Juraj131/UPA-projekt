@@ -6,10 +6,16 @@ Extrakcia URL adries produktov z kategorie/zoznamu
 """
 
 import asyncio
-from playwright.async_api import async_playwright
-from bs4 import BeautifulSoup
 import sys
 import time
+from bs4 import BeautifulSoup
+import requests
+
+try:
+    from playwright.async_api import async_playwright
+    PLAYWRIGHT_AVAILABLE = True
+except ImportError:
+    PLAYWRIGHT_AVAILABLE = False
 
 
 async def get_product_urls(base_url, max_pages=5):
@@ -133,6 +139,55 @@ def extract_product_links(soup, base_url):
     return product_urls
 
 
+def get_urls_fallback(base_url, max_pages):
+    """
+    Fallback metoda bez Playwright - iba requests
+    """
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
+    }
+    
+    all_urls = []
+    
+    for page in range(1, max_pages + 1):
+        try:
+            url = f"{base_url}?page={page}"
+            print(f"Stranka {page}/{max_pages}", file=sys.stderr)
+            
+            response = requests.get(url, headers=headers, timeout=10)
+            response.raise_for_status()
+            
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            page_urls = []
+            links = soup.find_all('a', href=True)
+            
+            for link in links:
+                href = link.get('href')
+                if href and '/pneu-' in href:
+                    if href.startswith('/'):
+                        full_url = 'https://www.pneuboss.sk' + href
+                    else:
+                        full_url = href
+                    
+                    if full_url not in all_urls:
+                        all_urls.append(full_url)
+                        page_urls.append(full_url)
+            
+            print(f"Stranka {page}: {len(page_urls)} produktov", file=sys.stderr)
+            
+            if len(page_urls) == 0:
+                break
+                
+            time.sleep(1)
+            
+        except Exception as e:
+            print(f"Chyba pri spracovani: {e}", file=sys.stderr)
+            continue
+    
+    return all_urls
+
+
 async def main():
     """
     Hlavna funkcia - vstupny bod
@@ -145,8 +200,19 @@ async def main():
     print(f"Extrakcia URL zimnych pneumatik z {base_url}", file=sys.stderr)
     print(f"Ciel: minimalne 150 produktov", file=sys.stderr)
     
-    # Extrakcia URL produktov
-    product_urls = await get_product_urls(base_url, max_pages)
+    # Skus Playwright, ak zlyhá pouzi fallback
+    product_urls = []
+    if PLAYWRIGHT_AVAILABLE:
+        try:
+            print("Pouzivam Playwright...", file=sys.stderr)
+            product_urls = await get_product_urls(base_url, max_pages)
+        except Exception as e:
+            print(f"Playwright zlyhal: {e}", file=sys.stderr)
+            print("Prepnutie na fallback metodu...", file=sys.stderr)
+            product_urls = get_urls_fallback(base_url, max_pages)
+    else:
+        print("Playwright nie je dostupny, pouzivam fallback...", file=sys.stderr)
+        product_urls = get_urls_fallback(base_url, max_pages)
     
     # Filtrovanie - iba relevantne pneumatiky
     filtered_urls = []

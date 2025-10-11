@@ -9,7 +9,7 @@ source .venv/bin/activate
 
 # Krok 1: Ziskanie zoznamu URL produktov a ulozenie do url_test.txt
 echo "1. Ziskavam zoznam URL produktov..."
-python3 get_urls.py > url_test.txt
+python3 fallback_scraper.py > url_test.txt
 
 # Kontrola ci sa vytvorili URL
 if [ ! -s url_test.txt ]; then

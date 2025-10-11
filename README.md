@@ -15,14 +15,12 @@ Dovod vyberu: Specializovany e-shop s podrobnymi parametrami pneumatik v tabulka
 ## Implementácia
 
 **Skripty:**
-- `get_urls.py` - Ziskava zoznam URL produktov (zimnych pneumatik)
-- `fallback_scraper.py` - Extrahuje detailne informacie z produktovych stranok
+- `fallback_scraper.py` - Extrahuje URL a detailne informacie z produktovych stranok
 - `build.sh` - Instalacia zavislosti a priprava
 - `run.sh` - Testovaci skript
 
 **Technologie:**
 - Python 3 + virtualne prostredie (venv)
-- Playwright (automatizacia prehliadaca)
 - BeautifulSoup4 (parsovanie HTML)
 - Requests (HTTP requesty)
 
@@ -62,24 +60,15 @@ Vystupny TSV subor obsahuje **8 stlpcov** bez hlavicky:
 ### Uplne spracovanie:
 ```bash
 # 1. Ziskanie vsetkych URL (150+)
-python3 get_urls.py > urls.txt
+python3 fallback_scraper.py > urls.txt
 
 # 2. Spracovanie vsetkych produktov
-cat urls.txt | python3 scraper.py > data.tsv
+cat urls.txt | python3 fallback_scraper.py scrape > data.tsv
 ```
 
 ## Poznamky
 
-**Zalozne riesenie:** V pripade problemov s Playwright na serveri merlin je k dispozicii `fallback_scraper.py` ktory pouziva iba requests + BeautifulSoup.
-
-**Pouzitie zalozneho scrapera:**
-```bash
-# Ziskanie URL
-python3 fallback_scraper.py > urls.txt
-
-# Spracovanie produktov  
-cat urls.txt | python3 fallback_scraper.py scrape > data.tsv
-```
+**Jednoducha architektúra:** Projekt používa `fallback_scraper.py` ktorý funguje spoľahlivo na všetkých systémech (Windows, Linux) a nepotrebuje GUI.
 
 **Ohladuplnost k serveru:** Skripty obsahuju casove pauzy medzi requestmi (0.5-1s) aby nezatazovali server.
 
