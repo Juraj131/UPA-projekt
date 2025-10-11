@@ -18,11 +18,8 @@ source .venv/bin/activate
 # Instalacia zavislosti
 echo "Instalujem zavislosti..."
 pip install --upgrade pip
-pip install playwright beautifulsoup4 requests lxml
+pip install -r requirements.txt
 
-# Instalacia prehliadacov pre Playwright
-echo "Instalujem prehliadace..."
-playwright install chromium
 
 # Nastavenie executable práv
 chmod +x run.sh

@@ -41,3 +41,12 @@ Thumbs.db
 url_test.txt
 test_data_*.tsv
 data_final_*.tsv
+
+# Nepotrebné súbory pre production deployment
+get_urls.py
+simple_test.py
+generate_final.sh
+data.tsv
+data_final.tsv
+test_data_corrected.tsv
+urls.txt
