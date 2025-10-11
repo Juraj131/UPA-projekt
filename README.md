@@ -1,7 +1,7 @@
 # UPA Projekt 2 - Web Scraping
 
 **Nazov tymu:** UPA-Team-2025  
-**Riesitelia:** 
+**Riesitelia:**
 - Juraj Bendik, Adam Brezina
 
 ## E-shop
@@ -191,4 +191,8 @@ product = {
 
 ## Licencia
 
+<<<<<<< HEAD
 Tento projekt je urceny na vzdelacie ucely pre UPA projekt na VUT FIT.
+=======
+Tento projekt je určený na vzdelávacie účely pre UPA projekt na VUT FIT.
+>>>>>>> 5ccc079c2203dded64ae5c509d538c82c3fe90c2
