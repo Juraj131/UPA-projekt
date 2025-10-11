@@ -1,32 +1,32 @@
 #!/bin/bash
-# UPA Projekt 2 - Generovanie finálneho datasetu (230 produktov)
-# Tento script nie je súčasťou zadania, ale slúži na vytvorenie kompletných dát
+# UPA Projekt 2 - Generovanie finalneho datasetu (230 produktov)
+# Tento script nie je sucastou zadania, ale sluzi na vytvorenie kompletnych dat
 
-echo "=== Generovanie finálneho datasetu ==="
+echo "=== Generovanie finalneho datasetu ==="
 
-# Aktivácia virtuálneho prostredia
+# Aktivacia virtualneho prostredia
 source .venv/bin/activate
 
-# Použijem existujúci urls.txt alebo ho vytvorím
+# Pouzijem existujuci urls.txt alebo ho vytvorim
 if [ ! -f "urls.txt" ]; then
-    echo "1. Získavam kompletný zoznam URL produktov..."
+    echo "1. Ziskavam kompletny zoznam URL produktov..."
     python3 get_urls.py > urls.txt
 fi
 
 url_count=$(wc -l < urls.txt)
-echo "   ✓ Spracovávam všetkých $url_count produktov..."
+echo "   ✓ Spracovavam vsetkych $url_count produktov..."
 
-# Generovanie finálneho datasetu
+# Generovanie finalneho datasetu
 cat urls.txt | python3 fallback_scraper.py scrape > data_final.tsv
 
-# Kontrola výsledkov
+# Kontrola vysledkov
 if [ -f "data_final.tsv" ]; then
     final_count=$(wc -l < data_final.tsv)
-    echo "   ✓ Spracovaných $final_count produktov"
-    echo "   ✓ Finálny dataset: data_final.tsv"
+    echo "   ✓ Spracovanych $final_count produktov"
+    echo "   ✓ Finalny dataset: data_final.tsv"
 else
     echo "ERROR: Nepodarilo sa vytvoriť data_final.tsv!"
     exit 1
 fi
 
-echo "=== Finálny dataset vytvorený úspešne! ==="
+echo "=== Finalny dataset vytvoreny uspesne! ==="

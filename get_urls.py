@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Skript 1: get_urls.py
-Extrakcia URL adries produktov z kategórie/zoznamu
-Podľa architektúry z prednášky - slide 7, 30-34
+Extrakcia URL adries produktov z kategorie/zoznamu
 """
 
 import asyncio
@@ -15,20 +14,20 @@ import time
 
 async def get_product_urls(base_url, max_pages=5):
     """
-    Extrahuje URL produktov zo stránky pomocou Playwright
+    Extrahuje URL produktov zo stranky pomocou Playwright
     
     Args:
-        base_url (str): Základná URL kategórie/zoznamu
-        max_pages (int): Maximálny počet stránok na prechádzanie
+        base_url (str): Zakladna URL kategorie/zoznamu
+        max_pages (int): Maximalny pocet stranok na prechadzavanie
     
     Returns:
         list: Zoznam URL produktov
     """
-    print(f"🌐 Spúšťam extrakciu URL z: {base_url}", file=sys.stderr)
-    print(f"📄 Max stránok: {max_pages}", file=sys.stderr)
+    print(f"Extrakciu URL z: {base_url}", file=sys.stderr)
+    print(f"Max stranok: {max_pages}", file=sys.stderr)
     
     async with async_playwright() as p:
-        # Spustenie prehliadača v headless režime (slide 30)
+        # Spustenie prehliadaca v headless rezime
         browser = await p.chromium.launch(headless=True)
         context = await browser.new_context(
             user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
@@ -39,69 +38,69 @@ async def get_product_urls(base_url, max_pages=5):
         
         try:
             for page_num in range(1, max_pages + 1):
-                print(f"🔄 Spracovávam stránku {page_num}/{max_pages}", file=sys.stderr)
+                print(f"Stranka {page_num}/{max_pages}", file=sys.stderr)
                 
-                # Vytvorenie URL pre stránku
+                # Vytvorenie URL pre stranku
                 if '?' in base_url:
                     page_url = f"{base_url}&page={page_num}"
                 else:
                     page_url = f"{base_url}?page={page_num}"
                 
-                print(f"📡 Načítavam: {page_url}", file=sys.stderr)
-                
-                # Navigácia na stránku (slide 31)
+                print(f"Nacitavanie: {page_url}", file=sys.stderr)
+            
+                # Navigacia na stranku
                 await page.goto(page_url, wait_until="networkidle")
                 
-                # Čakanie na vykonanie JavaScript (slide 32-33)
+                # Cakanie na vykonanie JavaScript
                 await page.wait_for_timeout(2000)  # 2 sekundy na JS
                 
-                # Pokus o čakanie na produktový kontajner
+                # Pokus o cakanie na produktovy kontajner
                 try:
                     await page.wait_for_selector('[class*="product"], .item, article', timeout=5000)
                 except:
-                    print(f"⚠️ Timeout - pokračujem bez čakania na selektor", file=sys.stderr)
-                
-                # Získanie finálneho HTML (slide 27)
+                    print(f"Timeout", file=sys.stderr)
+
+                # Ziskanie finalneho HTML
                 html_content = await page.content()
-                
-                # Parsovanie pomocou BeautifulSoup (slide 27)
+
+                # Parsovanie pomocou BeautifulSoup
                 soup = BeautifulSoup(html_content, 'html.parser')
-                
-                # Extrakcia produktových linkov (slide 24 - CSS selektory)
+
+                # Extrakcia produktovych linkov
                 page_urls = extract_product_links(soup, base_url)
                 
                 if page_urls:
                     all_product_urls.extend(page_urls)
-                    print(f"✅ Stránka {page_num}: {len(page_urls)} produktov", file=sys.stderr)
+                    print(f"Stranka {page_num}: {len(page_urls)} produktov", file=sys.stderr)
                 else:
-                    print(f"❌ Stránka {page_num}: Žiadne produkty - končím", file=sys.stderr)
+                    print(f"Stranka {page_num}: Ziadne produkty - koncim", file=sys.stderr)
                     break
                 
-                # Pauza medzi stránkami
+                # Pauza medzi strankami
                 await asyncio.sleep(1)
         
         except Exception as e:
-            print(f"❌ Chyba pri spracovaní: {e}", file=sys.stderr)
+            print(f"Chyba pri spracovani: {e}", file=sys.stderr)
         
         finally:
             await browser.close()
         
-        return list(set(all_product_urls))  # Odstránenie duplikátov
+        return list(set(all_product_urls))  # Odstranenie duplikatov
 
 
 def extract_product_links(soup, base_url):
     """
     Extrahuje linky na produkty zo soup objektu
-    Špecializované na PneumaBoss štruktúru
+    Specializovane na PneumaBoss strukturu
     """
     product_urls = []
     
-    # CSS selektory špecifické pre PneumaBoss
+    # CSS selektory specificke pre PneumaBoss
     selectors = [
-        'a[href*="/pneu-"]',        # Hlavný pattern pre produkty
-        'a[href*="pneumatik"]',      # Alternatívny pattern  
-        '.product-item a',          # Produktové kontajnery
-        '.tire-item a',             # Pneumatikové kontajnery
+        'a[href*="/pneu-"]',        # Hlavny pattern pre produkty
+        'a[href*="pneumatik"]',      # Alternativny pattern  
+        '.product-item a',          # Produktove kontajnery
+        '.tire-item a',             # Pneumatikove kontajnery
         'a[title*="pneu"]'          # Linky s pneumatikami v title
     ]
     
@@ -109,12 +108,12 @@ def extract_product_links(soup, base_url):
         elements = soup.select(selector)
         
         if elements:
-            print(f"🎯 Našiel som {len(elements)} linkov: {selector}", file=sys.stderr)
+            print(f"Najdenych {len(elements)} linkov: {selector}", file=sys.stderr)
             
             for element in elements:
                 href = element.get('href')
                 if href and href not in product_urls:
-                    # Vytvorenie absolútnej URL
+                    # Vytvorenie absolutnej URL
                     if href.startswith('http'):
                         full_url = href
                     elif href.startswith('/'):
@@ -122,13 +121,13 @@ def extract_product_links(soup, base_url):
                     else:
                         full_url = base_url.rstrip('/') + '/' + href
                     
-                    # Filtrovanie relevantných pneumatík 
+                    # Filtrovanie relevantnych pneumatik 
                     if ('pneuboss.sk' in full_url and 
                         any(keyword in full_url.lower() for keyword in ['/pneu-', 'pneumatik', 'tire']) and
                         not any(skip in full_url.lower() for skip in ['kategoria', 'filter', 'search', 'cart'])):
                         product_urls.append(full_url)
             
-            if len(product_urls) > 20:  # Ak našiel dostatok, prestaň hľadať
+            if len(product_urls) > 20:
                 break
     
     return product_urls
@@ -136,36 +135,36 @@ def extract_product_links(soup, base_url):
 
 async def main():
     """
-    Hlavná funkcia - vstupný bod
-    Získa minimálne 150 URL produktov podľa zadania
+    Hlavna funkcia - vstupny bod
+    Ziska minimalne 150 URL produktov podla zadania
     """
-    # Základná URL pre zimné pneumatiky na pneuboss.sk
+    # Zakladna URL pre zimne pneumatiky na pneuboss.sk
     base_url = "https://www.pneuboss.sk/pneumatiky/zimne"
-    max_pages = 20  # Dostatok stránok pre 150+ produktov
-    
-    print(f"Začínam extrahovať URL zimných pneumatík z {base_url}", file=sys.stderr)
-    print(f"Cieľ: minimálne 150 produktov", file=sys.stderr)
+    max_pages = 20  # Dostatok stranok pre 150+ produktov
+
+    print(f"Extrakcia URL zimnych pneumatik z {base_url}", file=sys.stderr)
+    print(f"Ciel: minimalne 150 produktov", file=sys.stderr)
     
     # Extrakcia URL produktov
     product_urls = await get_product_urls(base_url, max_pages)
     
-    # Filtrovanie - iba relevantné pneumatiky
+    # Filtrovanie - iba relevantne pneumatiky
     filtered_urls = []
     for url in product_urls:
         if any(keyword in url.lower() for keyword in ['pneu', 'tire', 'winter', 'zimn']):
-            # Kontrola že nie je to duplicita alebo nerelevantný link
+            # Kontrola ze nie je to duplicita alebo nerelevantny link
             if url not in filtered_urls and 'pneuboss.sk' in url:
                 filtered_urls.append(url)
     
-    print(f"Extrahovalo sa {len(filtered_urls)} relevantných URL produktov", file=sys.stderr)
+    print(f"Extrahovalo sa {len(filtered_urls)} relevantnych URL produktov", file=sys.stderr)
     
-    # Zabezpečenie minimálne 150 produktov
+    # Zabezpecenie minimalne 150 produktov
     if len(filtered_urls) < 150:
-        print(f"UPOZORNENIE: Našlo sa len {len(filtered_urls)} produktov, požadovaných je 150+", file=sys.stderr)
+        print(f"UPOZORNENIE: Naslo sa len {len(filtered_urls)} produktov, pozadovanych je 150+", file=sys.stderr)
     
-    # Výstup URL na štandardný výstup (bez hlavičky, jeden URL na riadok)
+    # Vystup URL na standardny vystup (bez hlavicky, jeden URL na riadok)
     for url in filtered_urls:
-        print(url)  # stdout pre ďalší skript
+        print(url)  # stdout pre dalsi skript
 
 
 if __name__ == "__main__":

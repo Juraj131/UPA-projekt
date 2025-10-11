@@ -1,194 +1,194 @@
 # UPA Projekt 2 - Web Scraping
 
-**Názov týmu:** UPA-Team-2025  
-**Riešitelia:** 
-- Juraj Bendik (vedúci týmu)
+**Nazov tymu:** UPA-Team-2025  
+**Riesitelia:** 
+- Juraj Bendik, Adam Brezina
 
 ## E-shop
 
 **URL:** https://www.pneuboss.sk  
-**Názov:** PneumaBoss - slovenský e-shop s pneumatikami  
-**Kategória:** Zimné pneumatiky  
+**Nazov:** PneumaBoss - slovensky e-shop s pneumatikami  
+**Kategoria:** Zimne pneumatiky  
 
-Dôvod výberu: Špecializovaný e-shop s podrobnými parametrami pneumatík v tabuľkách, menej známy než hlavné e-shopy, slovenský obsah.
+Dovod vyberu: Specializovany e-shop s podrobnymi parametrami pneumatik v tabulkach, menej znamy nez hlavne e-shopy, slovensky obsah.
 
 ## Implementácia
 
 **Skripty:**
-- `get_urls.py` - Získava zoznam URL produktov (zimných pneumatík)
-- `fallback_scraper.py` - Extrahuje detailné informácie z produktových stránok
-- `build.sh` - Inštalácia závislostí a príprava
-- `run.sh` - Testovací skript
+- `get_urls.py` - Ziskava zoznam URL produktov (zimnych pneumatik)
+- `fallback_scraper.py` - Extrahuje detailne informacie z produktovych stranok
+- `build.sh` - Instalacia zavislosti a priprava
+- `run.sh` - Testovaci skript
 
-**Technológie:**
-- Python 3 + virtuálne prostredie (venv)
-- Playwright (automatizácia prehliadača)
+**Technologie:**
+- Python 3 + virtualne prostredie (venv)
+- Playwright (automatizacia prehliadaca)
 - BeautifulSoup4 (parsovanie HTML)
 - Requests (HTTP requesty)
 
-## Inštalácia
+## Instalacia
 
-1. Uistite sa, že máte Python 3.7+ nainštalovaný
-2. Aktivujte virtuálne prostredie (už vytvorené)
-3. Balíky sú už nainštalované v projekte
+1. Uistite sa, ze mate Python 3.7+ nainstalovany
+2. Aktivujte virtualne prostredie (uz vytvorene)
+3. Baliky su uz nainstalovane v projekte
 
-## Význam stĺpcov TSV výstupu
+## Vyznam stlpcov TSV vystupu
 
-Výstupný TSV súbor obsahuje **8 stĺpcov** bez hlavičky:
+Vystupny TSV subor obsahuje **8 stlpcov** bez hlavicky:
 
-| Poradie | Názov | Typ | Popis |
+| Poradie | Nazov | Typ | Popis |
 |---------|-------|-----|--------|
-| 1 | url | ID | URL produktu (identifikácia) |
-| 2 | nazov | string | Názov pneumatiky |
-| 3 | cena | string | Aktuálna predajná cena (napr. "54,83 €") |
-| 4 | typ_pneu | kategorický | Typ pneumatiky (Osobné pneu, Dodávkové a nákladní pneu) |
-| 5 | segment | kategorický | Cenový segment (Ekonomická trieda, Stredná trieda, Prémiová trieda) |
-| 6 | sirka | číselný | Šírka pneumatiky v mm |
-| 7 | profil | číselný | Výška profilu v % |
-| 8 | priemer | číselný | Priemer ráfiku v palcoch |
+| 1 | url | ID | URL produktu (identifikacia) |
+| 2 | nazov | string | Nazov pneumatiky |
+| 3 | cena | string | Aktualna predajna cena (napr. "54,83 €") |
+| 4 | typ_pneu | kategoricky | Typ pneumatiky (Osobne pneu, Dodavkove a nakladni pneu) |
+| 5 | segment | kategoricky | Cenovy segment (Ekonomicka trieda, Stredna trieda, Premiova trieda) |
+| 6 | sirka | ciselny | Sirka pneumatiky v mm |
+| 7 | profil | ciselny | Vyska profilu v % |
+| 8 | priemer | ciselny | Priemer rafiku v palcoch |
 
 ## Spustenie
 
-### Príprava prostredia:
+### Priprava prostredia:
 ```bash
 ./build.sh
 ```
 
-### Test na prvých 10 produktoch:
+### Test na prvych 10 produktoch:
 ```bash  
 ./run.sh
 ```
 
-### Úplné spracovanie:
+### Uplne spracovanie:
 ```bash
-# 1. Získanie všetkých URL (150+)
+# 1. Ziskanie vsetkych URL (150+)
 python3 get_urls.py > urls.txt
 
-# 2. Spracovanie všetkých produktov
+# 2. Spracovanie vsetkych produktov
 cat urls.txt | python3 scraper.py > data.tsv
 ```
 
-## Poznámky
+## Poznamky
 
-**Záložné riešenie:** V prípade problémov s Playwright na serveri merlin je k dispozícii `fallback_scraper.py` ktorý používa iba requests + BeautifulSoup.
+**Zalozne riesenie:** V pripade problemov s Playwright na serveri merlin je k dispozicii `fallback_scraper.py` ktory pouziva iba requests + BeautifulSoup.
 
-**Použitie záložného scrapera:**
+**Pouzitie zalozneho scrapera:**
 ```bash
-# Získanie URL
+# Ziskanie URL
 python3 fallback_scraper.py > urls.txt
 
 # Spracovanie produktov  
 cat urls.txt | python3 fallback_scraper.py scrape > data.tsv
 ```
 
-**Ohľaduplnosť k serveru:** Skripty obsahujú časové pauzy medzi requestmi (0.5-1s) aby nezatežovali server.
+**Ohladuplnost k serveru:** Skripty obsahuju casove pauzy medzi requestmi (0.5-1s) aby nezatazovali server.
 
-**Testované URL:** Všetky uvedené URL boli testované a sú funkčné k dátumu vytvorenia projektu.
+**Testovane URL:** Vsetky uvedene URL boli testovane a su funkcne k datumu vytvorenia projektu.
 
 ## Výstup
 
-Skript vytvorí TSV súbor `produkty.tsv` s nasledujúcimi stĺpcami:
+Skript vytvori TSV subor `produkty.tsv` s nasledujucimi stlpcami:
 
 1. **url** - URL produktu
-2. **nazov** - Názov/meno produktu
+2. **nazov** - Nazov/meno produktu
 3. **cena** - Cena produktu
-4. **kategoria_1** až **kategoria_5** - Päť kategórií z tabuľky alebo breadcrumbs
+4. **kategoria_1** az **kategoria_5** - Pat kategorii z tabulky alebo breadcrumbs
 
-## Príklady použitia
+## Priklady pouzitia
 
 ### Pre e-shop s produktmi:
 ```
 URL: https://example-eshop.sk/produkty
 CSS selektor: .product-item a
-Počet produktov: 50
+Pocet produktov: 50
 ```
 
-### Pre stránku s katalógom:
+### Pre stranku s katalogom:
 ```
 URL: https://katalog.sk/kategoria/elektronika
 CSS selektor: a[href*="/produkt/"]
-Počet produktov: 20
+Pocet produktov: 20
 ```
 
 ## Funkcie
 
 ### ProductScraper trieda
 
-- **`get_product_links()`** - Nájde všetky linky na produkty
-- **`scrape_product_details()`** - Extrahuje detaily konkrétneho produktu
-- **`scrape_products()`** - Hlavná metóda na spracovanie všetkých produktov
-- **`save_to_tsv()`** - Uloží dáta do TSV súboru
+- **`get_product_links()`** - Najde vsetky linky na produkty
+- **`scrape_product_details()`** - Extrahuje detaily konkretneho produktu
+- **`scrape_products()`** - Hlavna metoda na spracovanie vsetkych produktov
+- **`save_to_tsv()`** - Ulozi data do TSV suboru
 
-### Automatická detekcia
+### Automaticka detekcia
 
-Scraper sa pokúsi automaticky detegovať:
-- Produktové linky (rôzne pattern-y)
-- Názvy produktov (h1, h2, .title, .product-name, atď.)
-- Ceny (.price, .product-price, [data-price], atď.)
-- Kategórie (breadcrumbs, tabuľky, meta tagy)
+Scraper sa pokusi automaticky detegovat:
+- Produktove linky (rozne pattern-y)
+- Nazvy produktov (h1, h2, .title, .product-name, atd.)
+- Ceny (.price, .product-price, [data-price], atd.)
+- Kategorie (breadcrumbs, tabulky, meta tagy)
 
-## Riešenie problémov
+## Riesenie problemov
 
-### Nenachádzajú sa produkty
-1. Spustite `page_analyzer.py` na analýzu štruktúry
-2. Použijte konkrétny CSS selektor
-3. Skontrolujte, či stránka načítava obsah cez JavaScript
+### Nenachadzaju sa produkty
+1. Spustite `page_analyzer.py` na analyzu struktury
+2. Pouzijte konkretny CSS selektor
+3. Skontrolujte, ci stranka nacitava obsah cez JavaScript
 
-### Prázdne údaje
-1. Stránka môže potrebovať viac času na načítanie (upravte `time.sleep()`)
-2. Elementi môžu mať iné CSS triedy/selektory
-3. Obsah môže byť generovaný dynamicky
+### Prazdne udaje
+1. Stranka moze potrebovat viac casu na nacitanie (upravte `time.sleep()`)
+2. Elementi mozu mat ine CSS triedy/selektory
+3. Obsah moze byt generovany dynamicky
 
-### Chyby pri spustení
-1. Uistite sa, že máte Chrome nainštalovaný
-2. Skontrolujte internetové pripojenie
-3. Niektoré stránky môžu blokovať automatizované requesty
+### Chyby pri spusteni
+1. Uistite sa, ze mate Chrome nainstalovany
+2. Skontrolujte internetove pripojenie
+3. Niektore stranky mozu blokovat automatizovane requesty
 
-## Prispôsobenie
+## Prisposobenie
 
-### Pridanie vlastných selektorov:
+### Pridanie vlastnych selektorov:
 
-V `product_scraper.py` môžete upraviť:
+V `product_scraper.py` mozete upravit:
 
 ```python
-# Pre názvy produktov
+# Pre nazvy produktov
 name_selectors = [
     'h1',
-    '.custom-product-title',  # Váš vlastný selektor
+    '.custom-product-title',  # Vas vlastny selektor
     '.product-name'
 ]
 
 # Pre ceny
 price_selectors = [
     '.price',
-    '.custom-price-class',    # Váš vlastný selektor
+    '.custom-price-class',    # Vas vlastny selektor
     '[data-custom-price]'
 ]
 ```
 
-### Zmena výstupu:
+### Zmena vystupu:
 
-Môžete pridať ďalšie stĺpce v metóde `scrape_product_details()`:
+Mozete pridat dalsie stlpce v metode `scrape_product_details()`:
 
 ```python
 product = {
     'url': product_url,
     'nazov': '',
     'cena': '',
-    'popis': '',              # Nový stĺpec
-    'dostupnost': '',         # Nový stĺpec
+    'popis': '',              # Novy stlpec
+    'dostupnost': '',         # Novy stlpec
     'kategoria_1': '',
-    # ... atď
+    # ... atd
 }
 ```
 
-## Technické detaily
+## Technicke detaily
 
-- **Selenium WebDriver** - Pre interakciu s dynamickým obsahom
+- **Selenium WebDriver** - Pre interakciu s dynamickym obsahom
 - **BeautifulSoup** - Pre parsovanie HTML
-- **Pandas** - Pre prácu s dátami a export
-- **ChromeDriver** - Automaticky spravovaný cez webdriver-manager
+- **Pandas** - Pre pracu s datami a export
+- **ChromeDriver** - Automaticky spravovany cez webdriver-manager
 
 ## Licencia
 
-Tento projekt je určený na vzdelávacie účely pre UPA projekt na VUT FIT.
+Tento projekt je urceny na vzdelacie ucely pre UPA projekt na VUT FIT.

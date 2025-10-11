@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Záložný scraper iba s requests - pre prípad problémov s Playwright na serveri merlin
+Zalozny scraper iba s requests - pre pripad problemov s Playwright na serveri merlin
 """
 
 import sys
@@ -14,7 +14,7 @@ from urllib.parse import urljoin
 
 def get_tire_urls_simple():
     """
-    Získa URL zimných pneumatík pomocou requests
+    Ziska URL zimnych pneumatik pomocou requests
     """
     base_url = "https://www.pneuboss.sk/pneumatiky/zimne"
     headers = {
@@ -23,19 +23,19 @@ def get_tire_urls_simple():
     
     all_urls = []
     
-    # Prechádzanie stránok - potrebujeme ísť na 20+ stránok pre 200+ produktov
-    # Na každej stránke získavame ~12 unikátnych produktov, takže 20 stránok = ~240 produktov
-    for page in range(1, 21):  # Max 20 stránok pre 200+ produktov
+    # Prechadzavanie stranok - potrebujeme ist na 20+ stranok pre 200+ produktov
+    # Na kazdej stranke ziskavame ~12 unikatnych produktov, takze 20 stranok = ~240 produktov
+    for page in range(1, 21):  # Max 20 stranok pre 200+ produktov
         try:
             url = f"{base_url}?page={page}"
-            print(f"Spracovávam stránku {page}: {url}", file=sys.stderr)
+            print(f"Spracovavam stranku {page}: {url}", file=sys.stderr)
             
             response = requests.get(url, headers=headers, timeout=10)
             response.raise_for_status()
             
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Hľadanie produktových linkov
+            # Hladanie produktovych linkov
             links = soup.find_all('a', href=True)
             page_urls = []
             
@@ -59,7 +59,7 @@ def get_tire_urls_simple():
             time.sleep(1)  # Pauza medzi requestmi
 
         except Exception as e:
-            print(f"  Chyba na stránke {page}: {e}", file=sys.stderr)
+            print(f"  Chyba na stranke {page}: {e}", file=sys.stderr)
             continue
     
     print(f"Celkovo extrahovalo sa {len(all_urls)} URL", file=sys.stderr)
@@ -71,29 +71,29 @@ def get_tire_urls_simple():
 
 def scrape_tire_simple():
     """
-    Jednoduchý scraper pre pneumatiky - načíta URL z urls.txt
+    Jednoduchy scraper pre pneumatiky - nacita URL z urls.txt
     """
-    print("Spúšťam extrahovanie informácií o pneumatikách...", file=sys.stderr)
+    print("Spustam extrahovanie informacii o pneumatikach...", file=sys.stderr)
     
     headers = {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
     }
     
-    # Čítanie URL zo stdin (pipeline komunikácia)
+    # Citanie URL zo stdin (pipeline komunikacia)
     for line_no, line in enumerate(sys.stdin, 1):
         url = line.strip()
         if not url:
             continue
             
         try:
-            print(f"Spracovávam {line_no}: {url}", file=sys.stderr)
+            print(f"Spracovavam {line_no}: {url}", file=sys.stderr)
             
             response = requests.get(url, headers=headers, timeout=10)
             response.raise_for_status()
             
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Extrakcia údajov
+            # Extrakcia udajov
             tire_data = {
                 'url': url,
                 'nazov': '',
@@ -110,11 +110,11 @@ def scrape_tire_simple():
             if title_elem:
                 tire_data['nazov'] = title_elem.get_text(strip=True)
             
-            # Cena - hľadáme hlavnú cenu produktu, nie doplnkové služby
-            # Najprv skúsime nájsť cenu s textom "Cena" 
+            # Cena - hladame hlavnu cenu produktu, nie doplnkove sluzby
+            # Najprv skusime najst cenu s textom "Cena" 
             cena_found = False
             
-            # Hľadáme elementy ktoré obsahujú "Cena" a číslo s €
+            # Hladame elementy ktore obsahuju "Cena" a cislo s €
             cena_elements = soup.find_all(string=re.compile(r'Cena\s*\d+[,.]?\d*\s*€', re.IGNORECASE))
             if cena_elements:
                 for elem in cena_elements:
@@ -124,28 +124,28 @@ def scrape_tire_simple():
                         cena_found = True
                         break
             
-            # Ak nenájdeme "Cena", hľadáme v span elementoch ale vylúčime "od" ceny
+            # Ak nenajdeme "Cena", hladame v span elementoch ale vylucime "od" ceny
             if not cena_found:
                 price_spans = soup.select('span[class*="price"]')
                 for span in price_spans:
                     price_text = span.get_text(strip=True)
-                    # Preskočíme ceny s "od" (to sú doplnkové služby)
+                    # Preskocime ceny s "od" (to su doplnkove sluzby)
                     if 'od' in price_text.lower():
                         continue
-                    # Hľadáme text s číslom a € ale bez "od"
+                    # Hladame text s cislom a € ale bez "od"
                     if re.search(r'\d+[,.]?\d*\s*€', price_text):
                         tire_data['cena'] = price_text
                         cena_found = True
                         break
             
-            # Ak stále nemáme cenu, skúsime všetky texty s cenou ale uprednostníme tie bez "od"
+            # Ak stale nemame cenu, skusime vsetky texty s cenou ale uprednostnime tie bez "od"
             if not cena_found:
                 all_prices = []
                 for elem in soup.find_all(string=re.compile(r'\d+[,.]?\d*\s*€')):
                     price_match = re.search(r'(\d+[,.]?\d*\s*€)', elem)
                     if price_match:
                         price_val = price_match.group(1)
-                        # Uprednostníme ceny bez "od"
+                        # Uprednostnime ceny bez "od"
                         if 'od' not in elem.lower():
                             tire_data['cena'] = price_val
                             cena_found = True
@@ -153,11 +153,11 @@ def scrape_tire_simple():
                         else:
                             all_prices.append(price_val)
                 
-                # Ak máme len "od" ceny, vezmeme prvú
+                # Ak mame len "od" ceny, vezmeme prvu
                 if not cena_found and all_prices:
                     tire_data['cena'] = all_prices[0]
             
-            # Parametre zo span elementov - nová logika podľa štruktúry stránky
+            # Parametre zo span elementov - nova logika podla struktury stranky
             param_mapping = {
                 'Typ pneu': 'typ_pneu',
                 'Segment': 'segment', 
@@ -174,7 +174,7 @@ def scrape_tire_simple():
                         tire_data[data_key] = next_span.get_text(strip=True)
                         break
             
-            # Extrakcia parametrov z názvu - fallback ak nie sú v span elementoch
+            # Extrakcia parametrov z nazvu - fallback ak nie su v span elementoch
             if tire_data['nazov']:
                 title_text = tire_data['nazov']
                 
@@ -189,7 +189,7 @@ def scrape_tire_simple():
                         tire_data['priemer'] = size_match.group(3)
                 
             
-            # TSV výstup - nová štruktúra: URL, názov, cena, typ pneu, segment, šírka, profil, priemer
+            # TSV vystup - nova struktura: URL, nazov, cena, typ pneu, segment, sirka, profil, priemer
             output = "\t".join([
                 tire_data['url'],
                 tire_data['nazov'],
