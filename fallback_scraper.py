@@ -80,25 +80,6 @@ def scrape_tire_simple():
                         cena_found = True
                         break
             
-            # Ak stale nemame cenu, skusime vsetky texty s cenou ale uprednostnime tie bez "od"
-            # if not cena_found:
-            #     all_prices = []
-            #     for elem in soup.find_all(string=re.compile(r'\d+[,.]?\d*\s*€')):
-            #         price_match = re.search(r'(\d+[,.]?\d*\s*€)', elem)
-            #         if price_match:
-            #             price_val = price_match.group(1)
-            #             # Uprednostnime ceny bez "od"
-            #             if 'od' not in elem.lower():
-            #                 tire_data['cena'] = price_val
-            #                 cena_found = True
-            #                 break
-            #             else:
-            #                 all_prices.append(price_val)
-                
-            #     # Ak mame len "od" ceny, vezmeme prvu
-            #     if not cena_found and all_prices:
-            #         tire_data['cena'] = all_prices[0]
-            
             # Parametry ze span elementu
             param_mapping = {
                 'Typ pneu': 'typ_pneu',
