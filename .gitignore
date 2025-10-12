@@ -43,7 +43,6 @@ test_data_*.tsv
 data_final_*.tsv
 
 # Nepotrebné súbory pre production deployment
-get_urls.py
 simple_test.py
 generate_final.sh
 data.tsv
