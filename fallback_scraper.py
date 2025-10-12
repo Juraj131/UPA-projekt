@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
 import re
 import time
 
+# Funkcia get_tire_urls_simple() bola prenesená do get_urls.py
+
 def scrape_tire_simple():
     """
     Scraper pro pneuboss.sk - nacita URL z urls.txt

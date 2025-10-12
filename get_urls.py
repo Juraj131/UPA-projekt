@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Skript 1: get_urls.py
 Extrakcia URL adries produktov z kategorie/zoznamu pomocou requests
@@ -23,8 +21,7 @@ def get_tire_urls_simple():
     all_urls = []
     
     # Prechadzavanie stranok - potrebujeme ist na 20+ stranok pre 200+ produktov
-    # Na kazdej stranke ziskavame ~12 unikatnych produktov, takze 20 stranok = ~240 produktov
-    for page in range(1, 21):  # Max 20 stranok pre 200+ produktov
+    for page in range(1, 21):
         try:
             url = f"{base_url}?page={page}"
             print(f"Spracovavam stranku {page}: {url}", file=sys.stderr)
@@ -53,9 +50,9 @@ def get_tire_urls_simple():
             print(f"  Našiel som {len(page_urls)} produktov", file=sys.stderr)
             
             if len(page_urls) == 0:
-                break  # Žiadne produkty na stránke
+                break
 
-            time.sleep(1)  # Pauza medzi requestmi
+            time.sleep(1)
 
         except Exception as e:
             print(f"  Chyba na stranke {page}: {e}", file=sys.stderr)
