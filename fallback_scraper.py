@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Zalozny scraper iba s requests - pre pripad problemov s Playwright na serveri merlin
-"""
 
 import sys
 import requests
 from bs4 import BeautifulSoup
 import re
 import time
-from urllib.parse import urljoin
+
 
 
 # Funkcia get_tire_urls_simple() bola prenesená do get_urls.py
