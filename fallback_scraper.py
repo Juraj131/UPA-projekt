@@ -26,7 +26,7 @@ def scrape_tire_simple():
             continue
             
         try:
-            print(f"Spracovavam {line_no}: {url}", file=sys.stderr)
+            print(f"Spracovanie {line_no}: {url}", file=sys.stderr)
             
             response = requests.get(url, headers=headers, timeout=10)
             response.raise_for_status()
