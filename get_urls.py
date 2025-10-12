@@ -20,11 +20,11 @@ def get_tire_urls_simple():
     
     all_urls = []
     
-    # Prechadzavanie stranok - potrebujeme ist na 20+ stranok pre 200+ produktov
+    # Prechadzavanie stranok - 20+ stranok pre 200+ produktov
     for page in range(1, 21):
         try:
             url = f"{base_url}?page={page}"
-            print(f"Spracovavam stranku {page}: {url}", file=sys.stderr)
+            print(f"Stranka {page}: {url}", file=sys.stderr)
             
             response = requests.get(url, headers=headers, timeout=10)
             response.raise_for_status()
@@ -47,7 +47,7 @@ def get_tire_urls_simple():
                         all_urls.append(full_url)
                         page_urls.append(full_url)
             
-            print(f"  Našiel som {len(page_urls)} produktov", file=sys.stderr)
+            print(f"  Dostupnych {len(page_urls)} produktov", file=sys.stderr)
             
             if len(page_urls) == 0:
                 break
@@ -58,9 +58,9 @@ def get_tire_urls_simple():
             print(f"  Chyba na stranke {page}: {e}", file=sys.stderr)
             continue
     
-    print(f"Celkovo extrahovalo sa {len(all_urls)} URL", file=sys.stderr)
+    print(f"Extrahovanych {len(all_urls)} URLs", file=sys.stderr)
     
-    # Výstup na stdout
+    # Vystup na stdout
     for url in all_urls:
         print(url)
 
@@ -68,10 +68,10 @@ def get_tire_urls_simple():
 def main():
     """
     Hlavna funkcia - vstupny bod
-    Ziska minimalne 150 URL produktov podla zadania
+    Ziska minimalne 150 URLs
     """
     print(f"Extrakcia URL zimnych pneumatik z https://www.pneuboss.sk/pneumatiky/zimne", file=sys.stderr)
-    print(f"Ciel: minimalne 150 produktov", file=sys.stderr)
+    print(f"Minimalne 150 produktov", file=sys.stderr)
     
     get_tire_urls_simple()
 
