@@ -1,36 +1,14 @@
-# UPA Projekt 2 - Web Scraping
+# UPA Projekt 1 - Web Scraping
 
-**Název týmu:** UPA-Team-2025  
+**Název týmu:** Tým 247208  
 **Řešitelé:**
-- Juraj Bendik
-- Adam Brezina
+- Juraj Bendik (247208)
+- Adam Brezina (247211)
 
 ## E-shop
 
 **URL:** https://www.pneuboss.sk  
-**Název:** PneumaBoss - slovenský e-shop s pneumatikami  
-**Kategorie:** Zimní pneumatiky
-
-Důvod výběru: Specializovaný e-shop s podrobnými parametry pneumatik v tabulkách, méně známý než hlavní e-shopy, slovenský obsah s dostatečným množstvím produktů.
-
-## Implementace
-
-**Skripty:**
-- `get_urls.py` - Extrakce URL adres produktů ze stránky e-shopu
-- `fallback_scraper.py` - Zpracování jednotlivých produktů a extrakce detailních informací
-- `build.sh` - Instalace závislostí a příprava virtuálního prostředí
-- `run.sh` - Testovací skript (první 10 produktů)
-
-**Pipeline:**
-```bash
-python3 get_urls.py > urls.txt                    # Extrakce URL
-cat urls.txt | python3 fallback_scraper.py > data.tsv   # Zpracování produktů
-```
-
-**Technologie:**
-- Python 3 + virtuální prostředí (venv)
-- BeautifulSoup4 (parsování HTML)
-- Requests (HTTP požadavky)
+**Název:** PneumaBoss - slovenský e-shop s pneumatikami
 
 ## Význam sloupců TSV výstupu
 
@@ -65,6 +43,7 @@ bash build.sh
 ```bash  
 ./run.sh
 ```
+*Poznámka: run.sh automaticky vygeneruje url_test.txt se všemi URL a zpracuje prvních 10 produktů*
 
 ### Úplné zpracování:
 ```bash
@@ -77,10 +56,6 @@ cat urls.txt | python3 fallback_scraper.py > data.tsv
 
 ## Poznámky
 
-**Architektura:** Projekt používá dvoustupňový přístup - nejprve se získají URL všech produktů (`get_urls.py`), poté se jednotlivě zpracovávají (`fallback_scraper.py`). Toto řešení je spolehlivé na všech systémech (Windows, Linux) a nevyžaduje GUI.
-
-**Získané množství dat:** Skript extrahuje přibližně 230+ produktů zimních pneumatik, což splňuje požadavek minimálně 150 položek.
+**Architektura:** Projekt používá dvoustupňový přístup - nejprve se získají URL všech produktů (`get_urls.py`), poté se jednotlivě zpracovávají (`fallback_scraper.py`)..
 
 **Kompatibilita:** Řešení používá pouze standardní Python knihovny (requests, beautifulsoup4) bez závislosti na webovém prohlížeči.
-
-**Ohleduplnost k serveru:** Skripty obsahují časové pauzy mezi požadavky (0.5-1s), aby nezatěžovaly server.
